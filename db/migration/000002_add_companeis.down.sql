@@ -1,0 +1,1 @@
+drop table if exists companies, up_users_companies_links;

@@ -1,0 +1,1 @@
+drop table if exists products, categories, products_category_links;

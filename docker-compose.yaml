@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./.temp/db:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    env_file:
+      - app.env
+    depends_on:
+      - db
