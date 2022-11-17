@@ -15,7 +15,7 @@ update up_users
 set confirmed  = true,
     updated_at = $1
 where confirmation_token = $2
-  and updated_at is not null
+  and deleted_at isnull
 returning id, name, username, email, provider, password, reset_password_token, confirmation_token, confirmed, blocked, created_at, updated_at, deleted_at
 `
 
@@ -49,7 +49,7 @@ const getUserByIdentifier = `-- name: getUserByIdentifier :one
 select id, name, username, email, provider, password, reset_password_token, confirmation_token, confirmed, blocked, created_at, updated_at, deleted_at
 from up_users
 where (username = $1 or email = $1)
-  and updated_at is not null
+  and deleted_at isnull
 `
 
 func (q *Queries) getUserByIdentifier(ctx context.Context, identifier string) (UpUser, error) {
@@ -78,7 +78,7 @@ update up_users
 set password   = $1,
     updated_at = $2
 where reset_password_token = $3
-  and updated_at is not null
+  and deleted_at isnull
 returning id, name, username, email, provider, password, reset_password_token, confirmation_token, confirmed, blocked, created_at, updated_at, deleted_at
 `
 
@@ -114,7 +114,7 @@ update up_users
 set reset_password_token = $1,
     updated_at           = $2
 where email = $3
-  and updated_at is not null
+  and deleted_at isnull
 returning id, name, username, email, provider, password, reset_password_token, confirmation_token, confirmed, blocked, created_at, updated_at, deleted_at
 `
 

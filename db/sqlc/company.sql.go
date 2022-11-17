@@ -48,24 +48,26 @@ func (q *Queries) createCompany(ctx context.Context, arg createCompanyParams) (C
 }
 
 const createCompanyUserLink = `-- name: createCompanyUserLink :exec
-insert into up_users_companies_links (user_id, company_id)
-values ($1, $2)
+insert into up_users_companies_links (user_id, company_id, role)
+values ($1, $2, $3)
 `
 
 type createCompanyUserLinkParams struct {
-	UserID    int64 `json:"user_id"`
-	CompanyID int64 `json:"company_id"`
+	UserID    int64  `json:"user_id"`
+	CompanyID int64  `json:"company_id"`
+	Role      string `json:"role"`
 }
 
 func (q *Queries) createCompanyUserLink(ctx context.Context, arg createCompanyUserLinkParams) error {
-	_, err := q.db.ExecContext(ctx, createCompanyUserLink, arg.UserID, arg.CompanyID)
+	_, err := q.db.ExecContext(ctx, createCompanyUserLink, arg.UserID, arg.CompanyID, arg.Role)
 	return err
 }
 
 const deleteCompany = `-- name: deleteCompany :one
-delete
-from companies
+update companies
+set deleted_at = now()
 where id = $1
+  and deleted_at isnull
 returning id
 `
 
@@ -78,6 +80,7 @@ func (q *Queries) deleteCompany(ctx context.Context, id int64) (int64, error) {
 const getCompanies = `-- name: getCompanies :many
 select id, name, address, phone, email, created_at, updated_at, deleted_at
 from companies
+where deleted_at isnull
 order by name
 `
 
@@ -117,6 +120,7 @@ const getCompany = `-- name: getCompany :one
 select id, name, address, phone, email, created_at, updated_at, deleted_at
 from companies
 where id = $1
+  and deleted_at isnull
 limit 1
 `
 
@@ -138,12 +142,13 @@ func (q *Queries) getCompany(ctx context.Context, id int64) (Company, error) {
 
 const updateCompany = `-- name: updateCompany :one
 update companies
-set name          = coalesce($3, name),
-    address       = coalesce($4, address),
-    phone         = coalesce($5, phone),
-    email         = coalesce($6, email),
-    updated_at    = $1
+set name       = coalesce($3, name),
+    address    = coalesce($4, address),
+    phone      = coalesce($5, phone),
+    email      = coalesce($6, email),
+    updated_at = $1
 where id = $2
+  and deleted_at isnull
 returning id, name, address, phone, email, created_at, updated_at, deleted_at
 `
 

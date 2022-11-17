@@ -45,14 +45,22 @@ func (q *Queries) createCategory(ctx context.Context, arg createCategoryParams) 
 }
 
 const deleteCategory = `-- name: deleteCategory :one
-delete
-from categories
+update categories
+set deleted_at = now()
 where id = $1
+  and deleted_at isnull
+  and company_id = $2
 returning id
 `
 
-func (q *Queries) deleteCategory(ctx context.Context, id int64) (int64, error) {
-	row := q.db.QueryRowContext(ctx, deleteCategory, id)
+type deleteCategoryParams struct {
+	ID        int64 `json:"id"`
+	CompanyID int64 `json:"company_id"`
+}
+
+func (q *Queries) deleteCategory(ctx context.Context, arg deleteCategoryParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, deleteCategory, arg.ID, arg.CompanyID)
+	var id int64
 	err := row.Scan(&id)
 	return id, err
 }
@@ -60,10 +68,12 @@ func (q *Queries) deleteCategory(ctx context.Context, id int64) (int64, error) {
 const getCategories = `-- name: getCategories :many
 select id, name, description, company_id, created_at, updated_at, deleted_at
 from categories
+where deleted_at isnull
+  and company_id = $1
 `
 
-func (q *Queries) getCategories(ctx context.Context) ([]Category, error) {
-	rows, err := q.db.QueryContext(ctx, getCategories)
+func (q *Queries) getCategories(ctx context.Context, companyID int64) ([]Category, error) {
+	rows, err := q.db.QueryContext(ctx, getCategories, companyID)
 	if err != nil {
 		return nil, err
 	}
@@ -97,11 +107,18 @@ const getCategory = `-- name: getCategory :one
 select id, name, description, company_id, created_at, updated_at, deleted_at
 from categories
 where id = $1
+  and deleted_at isnull
+  and company_id = $2
 limit 1
 `
 
-func (q *Queries) getCategory(ctx context.Context, id int64) (Category, error) {
-	row := q.db.QueryRowContext(ctx, getCategory, id)
+type getCategoryParams struct {
+	ID        int64 `json:"id"`
+	CompanyID int64 `json:"company_id"`
+}
+
+func (q *Queries) getCategory(ctx context.Context, arg getCategoryParams) (Category, error) {
+	row := q.db.QueryRowContext(ctx, getCategory, arg.ID, arg.CompanyID)
 	var i Category
 	err := row.Scan(
 		&i.ID,
@@ -117,16 +134,19 @@ func (q *Queries) getCategory(ctx context.Context, id int64) (Category, error) {
 
 const updateCategory = `-- name: updateCategory :one
 update categories
-set name = coalesce($3, name),
-    description = coalesce($4, description),
-    updated_at = $1
+set name        = coalesce($4, name),
+    description = coalesce($5, description),
+    updated_at  = $1
 where id = $2
+  and deleted_at isnull
+  and company_id = $3
 returning id, name, description, company_id, created_at, updated_at, deleted_at
 `
 
 type updateCategoryParams struct {
 	UpdatedAt   sql.NullTime   `json:"updated_at"`
 	ID          int64          `json:"id"`
+	CompanyID   int64          `json:"company_id"`
 	Name        sql.NullString `json:"name"`
 	Description sql.NullString `json:"description"`
 }
@@ -135,6 +155,7 @@ func (q *Queries) updateCategory(ctx context.Context, arg updateCategoryParams) 
 	row := q.db.QueryRowContext(ctx, updateCategory,
 		arg.UpdatedAt,
 		arg.ID,
+		arg.CompanyID,
 		arg.Name,
 		arg.Description,
 	)

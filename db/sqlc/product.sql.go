@@ -63,14 +63,22 @@ func (q *Queries) createProductCategoryLink(ctx context.Context, arg createProdu
 }
 
 const deleteProduct = `-- name: deleteProduct :one
-delete
-from products
+update products
+set deleted_at = now()
 where id = $1
+  and deleted_at isnull
+  and company_id = $2
 returning id
 `
 
-func (q *Queries) deleteProduct(ctx context.Context, id int64) (int64, error) {
-	row := q.db.QueryRowContext(ctx, deleteProduct, id)
+type deleteProductParams struct {
+	ID        int64 `json:"id"`
+	CompanyID int64 `json:"company_id"`
+}
+
+func (q *Queries) deleteProduct(ctx context.Context, arg deleteProductParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, deleteProduct, arg.ID, arg.CompanyID)
+	var id int64
 	err := row.Scan(&id)
 	return id, err
 }
@@ -79,11 +87,18 @@ const getProduct = `-- name: getProduct :one
 select id, name, description, cost, price, company_id, created_at, updated_at, deleted_at
 from products
 where id = $1
+  and deleted_at isnull
+  and company_id = $2
 limit 1
 `
 
-func (q *Queries) getProduct(ctx context.Context, id int64) (Product, error) {
-	row := q.db.QueryRowContext(ctx, getProduct, id)
+type getProductParams struct {
+	ID        int64 `json:"id"`
+	CompanyID int64 `json:"company_id"`
+}
+
+func (q *Queries) getProduct(ctx context.Context, arg getProductParams) (Product, error) {
+	row := q.db.QueryRowContext(ctx, getProduct, arg.ID, arg.CompanyID)
 	var i Product
 	err := row.Scan(
 		&i.ID,
@@ -102,11 +117,13 @@ func (q *Queries) getProduct(ctx context.Context, id int64) (Product, error) {
 const getProducts = `-- name: getProducts :many
 select id, name, description, cost, price, company_id, created_at, updated_at, deleted_at
 from products
+where deleted_at isnull
+  and company_id = $1
 order by id
 `
 
-func (q *Queries) getProducts(ctx context.Context) ([]Product, error) {
-	rows, err := q.db.QueryContext(ctx, getProducts)
+func (q *Queries) getProducts(ctx context.Context, companyID int64) ([]Product, error) {
+	rows, err := q.db.QueryContext(ctx, getProducts, companyID)
 	if err != nil {
 		return nil, err
 	}
@@ -140,18 +157,21 @@ func (q *Queries) getProducts(ctx context.Context) ([]Product, error) {
 
 const updateProduct = `-- name: updateProduct :one
 update products
-set name = coalesce($3, name),
-    description = coalesce($4, description),
-    cost = coalesce($5, cost),
-    price = coalesce($6, price),
-    updated_at = $1
+set name        = coalesce($4, name),
+    description = coalesce($5, description),
+    cost        = coalesce($6, cost),
+    price       = coalesce($7, price),
+    updated_at  = $1
 where id = $2
+  and deleted_at isnull
+  and company_id = $3
 returning id, name, description, cost, price, company_id, created_at, updated_at, deleted_at
 `
 
 type updateProductParams struct {
 	UpdatedAt   sql.NullTime   `json:"updated_at"`
 	ID          int64          `json:"id"`
+	CompanyID   int64          `json:"company_id"`
 	Name        sql.NullString `json:"name"`
 	Description sql.NullString `json:"description"`
 	Cost        sql.NullString `json:"cost"`
@@ -162,6 +182,7 @@ func (q *Queries) updateProduct(ctx context.Context, arg updateProductParams) (P
 	row := q.db.QueryRowContext(ctx, updateProduct,
 		arg.UpdatedAt,
 		arg.ID,
+		arg.CompanyID,
 		arg.Name,
 		arg.Description,
 		arg.Cost,

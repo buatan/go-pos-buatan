@@ -15,10 +15,10 @@ migration-%:
 migrationup:
 	make migration-up
 
-migratedown:
+migrationdown:
 	make migration-down
 
-migratedrop:
+migrationdrop:
 	make migration-drop
 
 migrationup1:

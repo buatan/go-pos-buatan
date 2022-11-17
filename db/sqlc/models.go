@@ -30,6 +30,18 @@ type Company struct {
 	DeletedAt sql.NullTime   `json:"deleted_at"`
 }
 
+type Coupon struct {
+	ID          int64          `json:"id"`
+	Code        string         `json:"code"`
+	Description sql.NullString `json:"description"`
+	CouponType  string         `json:"coupon_type"`
+	Amount      string         `json:"amount"`
+	CompanyID   int64          `json:"company_id"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   sql.NullTime   `json:"updated_at"`
+	DeletedAt   sql.NullTime   `json:"deleted_at"`
+}
+
 type Product struct {
 	ID          int64          `json:"id"`
 	Name        string         `json:"name"`

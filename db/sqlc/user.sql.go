@@ -17,7 +17,7 @@ from up_users
 where (provider = $1 or $1 isnull)
   and (confirmed = $2 or $2 isnull)
   and (blocked = $3 or $3 isnull)
-  and deleted_at  is not null
+  and deleted_at isnull
 `
 
 type countUsersParams struct {
@@ -97,7 +97,7 @@ const deleteUser = `-- name: deleteUser :one
 update up_users
 set deleted_at = now()
 where id = $1
-  and deleted_at  is not null
+  and deleted_at isnull
 returning id
 `
 
@@ -111,7 +111,7 @@ const getUser = `-- name: getUser :one
 select id, name, username, email, provider, password, reset_password_token, confirmation_token, confirmed, blocked, created_at, updated_at, deleted_at
 from up_users
 where id = $1
-  and deleted_at is not null
+  and deleted_at isnull
 limit 1
 `
 
@@ -142,7 +142,7 @@ from up_users
 where (provider = $3 or $3 isnull)
   and (confirmed = $4 or $4 isnull)
   and (blocked = $5 or $5 isnull)
-  and deleted_at  is not null
+  and deleted_at isnull
 order by id desc
 limit $1 offset $2
 `
@@ -208,7 +208,7 @@ set email                = coalesce($2, email),
     name                 = coalesce($7, name),
     updated_at           = $8
 where id = $1
-  and deleted_at  is not null
+  and deleted_at isnull
 returning id, name, username, email, provider, password, reset_password_token, confirmation_token, confirmed, blocked, created_at, updated_at, deleted_at
 `
 

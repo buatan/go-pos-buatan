@@ -16,7 +16,7 @@ returning *;
 select *
 from up_users
 where id = $1
-  and deleted_at is not null
+  and deleted_at isnull
 limit 1;
 
 -- name: getUsers :many
@@ -25,7 +25,7 @@ from up_users
 where (provider = sqlc.narg(provider) or sqlc.narg(provider) isnull)
   and (confirmed = sqlc.narg(confirmed) or sqlc.narg(confirmed) isnull)
   and (blocked = sqlc.narg(blocked) or sqlc.narg(blocked) isnull)
-  and deleted_at  is not null
+  and deleted_at isnull
 order by id desc
 limit $1 offset $2;
 
@@ -35,7 +35,7 @@ from up_users
 where (provider = sqlc.narg(provider) or sqlc.narg(provider) isnull)
   and (confirmed = sqlc.narg(confirmed) or sqlc.narg(confirmed) isnull)
   and (blocked = sqlc.narg(blocked) or sqlc.narg(blocked) isnull)
-  and deleted_at  is not null;
+  and deleted_at isnull;
 
 -- name: updateUser :one
 update up_users
@@ -47,12 +47,12 @@ set email                = coalesce(sqlc.narg(email), email),
     name                 = coalesce(sqlc.narg(name), name),
     updated_at           = sqlc.arg(updated_at)
 where id = $1
-  and deleted_at  is not null
+  and deleted_at isnull
 returning *;
 
 -- name: deleteUser :one
 update up_users
 set deleted_at = now()
 where id = $1
-  and deleted_at  is not null
+  and deleted_at isnull
 returning id;
