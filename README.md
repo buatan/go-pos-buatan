@@ -15,9 +15,36 @@ RESTful API untuk aplikasi Point of Sales UMKM
 
 ## Development
 
-- Creating schema
+- app.env file
+```dotenv
+MODULE=github.com/buatan/go-pos-umkm
+ENV=staging
+DB_DRIVER=postgresql
+DB_NAME=posbuatan
+DB_USER=posbuatan
+DB_PASS=password
+DB_HOST=localhost
+DB_PORT=5432
+```
+
+- Create DB if not exist (only if you using local database)
 ```shell
-migrate create -ext sql -dir db/migration -seq init_schema
+make createdb
+```
+
+- Run db migration
+```shell
+make migrationup
+```
+
+- If you want to add new table
+```shell
+make newmigration-[DESC_example_add_users]
+```
+
+- If you done add migration query then run
+```shell
+make migrationup1
 ```
 
 ## Deployment
