@@ -9,7 +9,7 @@ from categories
 where id = $1
 limit 1;
 
--- name: getCategorys :many
+-- name: getCategories :many
 select *
 from categories;
 
