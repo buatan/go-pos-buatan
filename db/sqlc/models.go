@@ -57,6 +57,17 @@ type Coupon struct {
 	DeletedAt   sql.NullTime   `json:"deleted_at"`
 }
 
+type File struct {
+	ID        int64        `json:"id"`
+	Name      string       `json:"name"`
+	Url       string       `json:"url"`
+	FileType  string       `json:"file_type"`
+	CompanyID int64        `json:"company_id"`
+	CreatedAt time.Time    `json:"created_at"`
+	UpdatedAt sql.NullTime `json:"updated_at"`
+	DeletedAt sql.NullTime `json:"deleted_at"`
+}
+
 type Product struct {
 	ID          int64          `json:"id"`
 	Name        string         `json:"name"`
