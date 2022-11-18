@@ -68,6 +68,18 @@ type File struct {
 	DeletedAt sql.NullTime `json:"deleted_at"`
 }
 
+type Payment struct {
+	ID            int64          `json:"id"`
+	TransactionID sql.NullInt64  `json:"transaction_id"`
+	CompanyID     int64          `json:"company_id"`
+	Code          string         `json:"code"`
+	Date          time.Time      `json:"date"`
+	Amount        string         `json:"amount"`
+	Note          sql.NullString `json:"note"`
+	CreatedAt     time.Time      `json:"created_at"`
+	UpdatedAt     sql.NullTime   `json:"updated_at"`
+}
+
 type Product struct {
 	ID          int64          `json:"id"`
 	Name        string         `json:"name"`
@@ -83,6 +95,31 @@ type Product struct {
 type ProductsCategoriesLink struct {
 	CategoryID int64 `json:"category_id"`
 	ProductID  int64 `json:"product_id"`
+}
+
+type Transaction struct {
+	ID              int64          `json:"id"`
+	Code            string         `json:"code"`
+	Date            time.Time      `json:"date"`
+	Subtotal        string         `json:"subtotal"`
+	Discount        sql.NullString `json:"discount"`
+	Note            sql.NullString `json:"note"`
+	ContactID       int64          `json:"contact_id"`
+	CompanyID       int64          `json:"company_id"`
+	TransactionType string         `json:"transaction_type"`
+	CreatedAt       time.Time      `json:"created_at"`
+	UpdatedAt       sql.NullTime   `json:"updated_at"`
+}
+
+type TransactionItem struct {
+	ID            int64          `json:"id"`
+	TransactionID int64          `json:"transaction_id"`
+	ProductID     sql.NullInt64  `json:"product_id"`
+	ProductName   string         `json:"product_name"`
+	Quantity      string         `json:"quantity"`
+	Price         string         `json:"price"`
+	Discount      sql.NullString `json:"discount"`
+	Note          sql.NullString `json:"note"`
 }
 
 // up_users

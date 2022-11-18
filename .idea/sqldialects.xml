@@ -2,7 +2,7 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/db/migration/000001_init_schema.down.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/db/migration/000001_init_schema.up.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/db/migration/000001_init_schema.up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/migration/000002_add_companeis.up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/migration/000003_add_product_and_category.up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/migration/000004_add_coupons.up.sql" dialect="PostgreSQL" />
@@ -18,6 +18,6 @@
     <file url="file://$PROJECT_DIR$/db/query/product.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/query/transaction.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/query/user.sql" dialect="PostgreSQL" />
-    <file url="PROJECT" dialect="MySQL" />
+    <file url="PROJECT" dialect="PostgreSQL" />
   </component>
 </project>
