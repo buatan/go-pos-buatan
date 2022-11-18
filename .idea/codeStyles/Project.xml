@@ -1,0 +1,7 @@
+<component name="ProjectCodeStyleConfiguration">
+  <code_scheme name="Project" version="173">
+    <SqlCodeStyleSettings version="6">
+      <option name="FROM_ONLY_JOIN_INDENT" value="2" />
+    </SqlCodeStyleSettings>
+  </code_scheme>
+</component>
