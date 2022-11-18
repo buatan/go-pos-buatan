@@ -8,6 +8,7 @@
     <file url="file://$PROJECT_DIR$/db/migration/000004_add_coupons.up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/migration/000005_add_contacts.up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/migration/000006_add_files.up.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/db/migration/000007_add_transactions.up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/query/auth.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/query/category.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/query/company.sql" dialect="PostgreSQL" />
@@ -15,6 +16,7 @@
     <file url="file://$PROJECT_DIR$/db/query/coupon.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/query/file.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/query/product.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/db/query/transaction.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/query/user.sql" dialect="PostgreSQL" />
     <file url="PROJECT" dialect="MySQL" />
   </component>
